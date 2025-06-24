@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MoviNight - Discover Movies & TV Shows</title>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+  <body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splash-screen">
+      <div class="splash-content">
+        <img src="logo.png" alt="MoviNight" class="splash-logo" id="splash-logo" />
+        <h1 class="splash-title">MoviNight</h1>
+        <div class="splash-subtitle">Discover Movies & TV Shows</div>
+      </div>
+    </div>
+
+    <div class="app" id="main-app" style="display: none;">
+      <!-- Header -->
+      <header class="header">
+        <h1 class="header-title">
+          <img src="logo.png" alt="MoviNight" class="logo-image" />
+          <span class="logo-text">MoviNight</span>
+        </h1>
+        <nav class="header-nav">
+          <button class="nav-btn active" id="discover-nav" data-page="discover">
+            🔍 Discover
+          </button>
+          <button class="nav-btn" id="search-nav" data-page="search">
+            🔎 Search
+          </button>
+          <button class="nav-btn" id="watched-nav" data-page="watched">
+            ✅ Watched
+          </button>
+          <button class="nav-btn" id="white-list-nav" data-page="white-list">
+            ⭐ White List
+          </button>
+        </nav>
+        <button class="settings-btn" id="settings-btn" title="Settings">
+          ⚙️
+        </button>
+      </header>
+
+      <!-- Settings Modal -->
+      <div class="modal-overlay" id="settings-modal">
+        <div class="modal">
+          <div class="modal-header">
+            <h2>Settings</h2>
+            <button class="modal-close" id="close-settings">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="api-key-input">TMDB API Key:</label>
+              <input 
+                type="password" 
+                id="api-key-input" 
+                placeholder="Enter your TMDB API key..."
+                class="api-key-input"
+              />
+              <p class="help-text">
+                Get your free API key from 
+                <a href="https://www.themoviedb.org/settings/api" target="_blank">
+                  TMDB website
+                </a>
+              </p>
+            </div>
+            <div class="modal-actions">
+              <button class="btn btn-secondary" id="cancel-settings">Cancel</button>
+              <button class="btn btn-primary" id="save-settings">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Movie Details Modal -->
+      <div class="modal-overlay" id="movie-details-modal">
+        <div class="modal movie-details-modal">
+          <div class="modal-header">
+            <h2 id="movie-details-title">Movie Details</h2>
+            <button class="modal-close" id="close-movie-details">×</button>
+          </div>
+          <div class="modal-body movie-details-body">
+            <div class="movie-details-loading" id="movie-details-loading">
+              <div class="loading-spinner"></div>
+              <p>Loading movie details...</p>
+            </div>
+            <div class="movie-details-content" id="movie-details-content" style="display: none;">
+              <div class="movie-details-main">
+                <div class="movie-poster-container">
+                  <img id="movie-details-poster" src="" alt="Movie Poster" class="movie-details-poster" />
+                </div>
+                <div class="movie-info">
+                  <h1 id="movie-details-main-title" class="movie-title-large"></h1>
+                  <p id="movie-details-tagline" class="movie-tagline"></p>
+                  <div class="movie-meta">
+                    <span id="movie-details-year" class="movie-year"></span>
+                    <span id="movie-details-rating" class="movie-rating"></span>
+                    <span id="movie-details-type" class="movie-type"></span>
+                    <span id="movie-details-runtime" class="movie-runtime"></span>
+                  </div>
+                  <div class="movie-genres" id="movie-details-genres"></div>
+                  <div class="movie-overview">
+                    <h3>Overview</h3>
+                    <p id="movie-details-overview"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="movie-trailer-section" id="movie-trailer-section" style="display: none;">
+                <h3>Trailer</h3>
+                <div class="trailer-container">
+                  <iframe 
+                    id="trailer-iframe" 
+                    width="100%" 
+                    height="400" 
+                    src="" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                  </iframe>
+                </div>
+              </div>
+              <div class="movie-no-trailer" id="movie-no-trailer" style="display: none;">
+                <p>🎬 No trailer available for this content.</p>
+              </div>
+            </div>
+            <div class="movie-details-error" id="movie-details-error" style="display: none;">
+              <div class="error-icon">❌</div>
+              <h3>Failed to load details</h3>
+              <p id="movie-details-error-message"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Discover Page -->
+        <div class="page-content" id="discover-page">
+          <!-- Search Filters -->
+          <section class="search-section">
+            <div class="search-header">
+              <h2>Discover Content</h2>
+            </div>
+            
+            <div class="search-filters">
+              <!-- Content Type Toggle -->
+              <div class="filter-group">
+                <label class="filter-label">Content Type:</label>
+                <div class="toggle-group">
+                  <button class="toggle-btn active" data-type="movie">Movies</button>
+                  <button class="toggle-btn" data-type="tv">TV Shows</button>
+                </div>
+              </div>
+
+              <!-- Genres Filter -->
+              <div class="filter-group">
+                <label class="filter-label">Genres:</label>
+                <div class="genres-container" id="genres-container">
+                  <div class="loading-text">Loading genres...</div>
+                </div>
+              </div>
+
+              <!-- Language Filter -->
+              <div class="filter-group">
+                <label class="filter-label">Language:</label>
+                <div class="language-container" id="language-container">
+                  <div class="loading-text">Loading languages...</div>
+                </div>
+              </div>
+
+              <!-- Watch Providers Filter -->
+              <div class="filter-group">
+                <label class="filter-label">Streaming On:</label>
+                <div class="providers-container" id="providers-container">
+                  <div class="loading-text">Loading providers...</div>
+                </div>
+              </div>
+
+              <!-- Year Range Filter -->
+              <div class="filter-group">
+                <label class="filter-label">Year Range:</label>
+                <div class="year-range">
+                  <select id="year-from" class="year-select">
+                    <option value="2025" selected>2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                    <option value="2017">2017</option>
+                    <option value="2016">2016</option>
+                    <option value="2015">2015</option>
+                    <option value="2010">2010</option>
+                    <option value="2005">2005</option>
+                    <option value="2000">2000</option>
+                    <option value="1990">1990</option>
+                    <option value="1980">1980</option>
+                  </select>
+                  <span class="year-separator">TO</span>
+                  <select id="year-to" class="year-select">
+                    <option value="2020" selected>2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                    <option value="2017">2017</option>
+                    <option value="2016">2016</option>
+                    <option value="2015">2015</option>
+                    <option value="2010">2010</option>
+                    <option value="2005">2005</option>
+                    <option value="2000">2000</option>
+                    <option value="1990">1990</option>
+                    <option value="1980">1980</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Sort Options -->
+              <div class="filter-group">
+                <label class="filter-label">Sort By:</label>
+                <select id="sort-by" class="sort-select">
+                  <option value="release_date.desc" selected>Release Date (Newest First)</option>
+                  <option value="popularity.desc">Popularity (High to Low)</option>
+                  <option value="popularity.asc">Popularity (Low to High)</option>
+                  <option value="vote_average.desc">Rating (High to Low)</option>
+                  <option value="vote_average.asc">Rating (Low to High)</option>
+                  <option value="release_date.asc">Release Date (Oldest First)</option>
+                </select>
+              </div>
+
+              <!-- Animation Filter -->
+              <div class="filter-group">
+                <label class="filter-label">Content Filter:</label>
+                <div class="checkbox-container">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="exclude-animation" class="checkbox-input">
+                    <span class="checkbox-custom"></span>
+                    <span class="checkbox-text">🚫 Exclude Animation & Cartoons</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Search Button -->
+              <div class="filter-group">
+                <button class="btn btn-primary search-btn" id="search-btn">
+                  🔍 Search
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Results Section -->
+          <section class="results-section">
+            <div class="results-header" id="results-header" style="display: none;">
+              <h3>Search Results</h3>
+              <div class="results-info" id="results-info"></div>
+            </div>
+            
+            <div class="results-grid" id="results-grid">
+              <!-- Results will be populated here -->
+            </div>
+            
+            <div class="view-more-container" id="view-more-container" style="display: none;">
+              <button class="btn btn-primary view-more-btn" id="view-more-btn">
+                📺 View More Results
+              </button>
+            </div>
+          </section>
+
+          <!-- Loading State -->
+          <div class="loading" id="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Searching for content...</p>
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty-state" id="empty-state">
+            <div class="empty-icon">🎭</div>
+            <h3>Welcome to MoviNight!</h3>
+            <p>Use the filters above to discover amazing movies and TV shows.</p>
+            <p class="empty-tip">
+              <strong>Tip:</strong> Make sure to set your TMDB API key in the settings first.
+            </p>
+          </div>
+
+          <!-- Error State -->
+          <div class="error-state" id="error-state" style="display: none;">
+            <div class="error-icon">❌</div>
+            <h3>Oops! Something went wrong</h3>
+            <p id="error-message"></p>
+            <button class="btn btn-primary" onclick="location.reload()">Try Again</button>
+          </div>
+        </div>
+
+        <!-- Search Page -->
+        <div class="page-content" id="search-page" style="display: none;">
+          <section class="search-name-section">
+            <div class="search-name-header">
+              <h2>Search Movies & TV Shows</h2>
+              <p class="search-description">Search for any movie or TV show by name. Results include both movies and series.</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar-container">
+              <div class="search-input-group">
+                <input 
+                  type="text" 
+                  id="search-input" 
+                  placeholder="Enter movie or TV show name..."
+                  class="search-input"
+                />
+                <button class="search-clear-btn" id="search-clear-btn" title="Clear search">
+                  ×
+                </button>
+              </div>
+              <div class="search-actions">
+                <button class="btn btn-primary search-name-btn" id="search-name-btn">
+                  🔎 Search
+                </button>
+              </div>
+              <p class="search-help-text">
+                💡 Enter any movie or TV show name to search across both movies and series
+              </p>
+            </div>
+
+            <!-- Search Results -->
+            <div class="search-name-results" id="search-name-results">
+              <!-- Results will be populated here -->
+            </div>
+
+            <!-- Search States -->
+            <div class="search-name-loading" id="search-name-loading" style="display: none;">
+              <div class="loading-spinner"></div>
+              <p>Searching for content...</p>
+            </div>
+
+            <div class="search-name-empty" id="search-name-empty" style="display: block;">
+              <div class="empty-icon">🔎</div>
+              <h3>Search for Movies & TV Shows</h3>
+              <p>Enter a movie or TV show name in the search box above to get started.</p>
+              <p class="empty-tip">
+                <strong>Tip:</strong> Try searching for popular titles like "Avengers", "Breaking Bad", or "The Office"
+              </p>
+            </div>
+
+            <div class="search-name-error" id="search-name-error" style="display: none;">
+              <div class="error-icon">❌</div>
+              <h3>Search Failed</h3>
+              <p id="search-name-error-message"></p>
+              <button class="btn btn-primary" onclick="document.getElementById('search-input').focus()">Try Again</button>
+            </div>
+          </section>
+        </div>
+
+        <!-- Watched Page -->
+        <div class="page-content" id="watched-page" style="display: none;">
+          <section class="watched-section">
+            <div class="watched-header">
+              <h2>My Watched List</h2>
+              <div class="watched-stats" id="watched-stats"></div>
+            </div>
+            
+            <div class="watched-filters">
+              <div class="filter-group">
+                <label class="filter-label">Filter by Type:</label>
+                <div class="toggle-group">
+                  <button class="toggle-btn active" data-filter="all">All</button>
+                  <button class="toggle-btn" data-filter="movie">Movies</button>
+                  <button class="toggle-btn" data-filter="tv">TV Shows</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="watched-grid" id="watched-grid">
+              <!-- Watched items will be populated here -->
+            </div>
+            
+            <!-- Empty Watched State -->
+            <div class="empty-watched" id="empty-watched" style="display: none;">
+              <div class="empty-icon">📺</div>
+              <h3>No watched content yet!</h3>
+              <p>Start marking movies and TV shows as watched to build your personal collection.</p>
+              <button class="btn btn-primary" id="go-to-discover">
+                🔍 Discover Content
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <!-- White List Page -->
+        <div class="page-content" id="white-list-page" style="display: none;">
+          <section class="white-list-section">
+            <div class="white-list-header">
+              <h2>My White List</h2>
+              <div class="white-list-stats" id="white-list-stats"></div>
+            </div>
+
+            <div class="white-list-filters">
+              <button class="nav-btn active" onclick="switchWhiteListFilter('all')">All</button>
+              <button class="nav-btn" onclick="switchWhiteListFilter('movie')">Movies</button>
+              <button class="nav-btn" onclick="switchWhiteListFilter('tv')">TV Shows</button>
+            </div>
+
+            <div class="white-list-grid" id="white-list-grid">
+              <!-- White list items will be populated here -->
+            </div>
+
+            <!-- Empty White List State -->
+            <div class="empty-white-list" id="empty-white-list" style="display: none;">
+              <div class="empty-icon">⭐</div>
+              <h3>No white listed content yet!</h3>
+              <p>Start marking movies and TV shows as white listed to build your personal collection.</p>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
