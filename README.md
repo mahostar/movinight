@@ -1,5 +1,5 @@
 <h1 style="display: flex; align-items: center; gap: 10px;">
-  <img src="dist/logo.png" alt="MoviNight" width="50"/>
+  <img src="dist/logo.png" alt="MoviNight" width="200"/>
   MoviNight
 </h1>
 
