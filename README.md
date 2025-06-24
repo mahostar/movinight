@@ -1,9 +1,8 @@
-<div style="display: flex; justify-content: center; margin-top: 40px;">
-  <h1 style="display: flex; align-items: flex-end; gap: 12px; margin: 0;">
-    <img src="dist/logo.png" alt="MoviNight" style="height: 48px; margin-bottom: 4px;" />
-    <span style="font-size: 2.5em;">MoviNight</span>
-  </h1>
-</div>
+<h1 style="display: flex; align-items: center; gap: 12px; margin: 0;">
+  <img src="dist/logo.png" alt="MoviNight"
+       style="height: 48px; transform: translateY(-8px);" />
+  <span style="font-size: 2.5em;">MoviNight</span>
+</h1>
 
 
 
