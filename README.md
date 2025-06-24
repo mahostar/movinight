@@ -2,7 +2,7 @@
 
 A modern, fast, and beautiful movie and TV show discovery application built with Tauri v2.
 
-!(branding/demo.gif)
+![Demo animation](branding/demo.gif)
 
 ## ✨ Features
 
