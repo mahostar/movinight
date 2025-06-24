@@ -1,7 +1,8 @@
-<h1 style="display: flex; align-items: center; gap: 10px;">
-  <img src="dist/logo.png" alt="MoviNight" width="200"/>
-  MoviNight
+<h1 style="display: flex; align-items: center; gap: 10px; margin: 0;">
+  <img src="dist/logo.png" alt="MoviNight" style="height: 50px; vertical-align: middle;"/>
+  <span style="font-size: 2em; line-height: 1;">MoviNight</span>
 </h1>
+
 
 
 A modern, fast, and beautiful movie and TV show discovery application built with Tauri v2.
