@@ -2,7 +2,7 @@
 
 A modern, fast, and beautiful movie and TV show discovery application built with Tauri v2.
 
-![MoviNight](dist/logo.png)
+<img src="dist/logo.png" alt="MoviNight" width="150"/>
 
 ## ✨ Features
 
