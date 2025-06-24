@@ -1,4 +1,8 @@
-# <img src="dist/logo.png" alt="MoviNight" width="150"/> MoviNight
+<h1 style="display: flex; align-items: center; gap: 10px;">
+  <img src="dist/logo.png" alt="MoviNight" width="50"/>
+  MoviNight
+</h1>
+
 
 A modern, fast, and beautiful movie and TV show discovery application built with Tauri v2.
 
