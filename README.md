@@ -1,12 +1,8 @@
-<h1 style="display: flex; align-items: center; gap: 10px; margin: 0;">
-  <img src="dist/logo.png" alt="MoviNight" style="height: 150px; vertical-align: middle;"/>
-  <span style="font-size: 2em; line-height: 1;">MoviNight</span>
-</h1>
-
-
-
+![MoviNight](branding/logoGit.png)
 
 A modern, fast, and beautiful movie and TV show discovery application built with Tauri v2.
+
+!branding/demo.gif
 
 ## ✨ Features
 
